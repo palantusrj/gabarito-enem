@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora TRI e Gabarito</title>
+    <style>
+        :root {
+            --primary: #0A192F;
+            --accent: #D4AF37;
+            --bg: #F8FAFC;
+            --text: #1E293B;
+            --border: #CBD5E1;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background-color: #132b4f;
+        }
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            max-height: 350px;
+            overflow-y: auto;
+            padding: 5px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #FAFAFA;
+        }
+        .q-item {
+            background: white;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #E2E8F0;
+            text-align: center;
+        }
+        .q-item span {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .q-item select {
+            padding: 6px;
+            font-size: 14px;
+        }
+        .result-box {
+            background: #F1F5F9;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .result-box h3 {
+            margin: 0 0 10px 0;
+            color: var(--primary);
+        }
+        .result-score {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Calculadora de Gabarito & TRI</h2>
+
+    <!-- PASSO 1: ESCOLHER CADERNO -->
+    <div id="step-1" class="step active">
+        <div class="form-group">
+            <label for="caderno">Selecione a cor do seu caderno de provas:</label>
+            <select id="caderno">
+                <option value="amarelo">Caderno Amarelo</option>
+                <option value="azul">Caderno Azul</option>
+                <option value="branco">Caderno Branco</option>
+                <option value="rosa">Caderno Rosa</option>
+            </select>
+        </div>
+        <button class="btn" onclick="irParaPasso2()">Avançar para o Gabarito</button>
+    </div>
+
+    <!-- PASSO 2: MARCAR RESPOSTAS -->
+    <div id="step-2" class="step">
+        <p style="text-align: center; color: #64748B;">Marque a alternativa que você marcou em cada questão:</p>
+        <div class="questions-grid" id="grid-questoes">
+            <!-- Gerado via JavaScript -->
+        </div>
+        <br>
+        <button class="btn" onclick="calcularResultado()">Calcular Nota e Acertos</button>
+    </div>
+
+    <!-- PASSO 3: RESULTADO -->
+    <div id="step-3" class="step">
+        <div class="result-box">
+            <h3>Resultado Preliminar</h3>
+            <p>Total de Acertos: <span id="txt-acertos" class="result-score">0 / 45</span></p>
+            <p>Nota Estimada (TRI): <span id="txt-nota" class="result-score">--</span></p>
+        </div>
+        <button class="btn" onclick="reiniciar()">Refazer Simulação</button>
+    </div>
+</div>
+
+<script>
+    // Gabarito fictício base para teste
+    const gabaritoOficial = ["A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E"];
+
+    // Criar os selects das 45 questões automaticamente
+    const grid = document.getElementById('grid-questoes');
+    for(let i = 1; i <= 45; i++) {
+        grid.innerHTML += `
+            <div class="q-item">
+                <span>Q. ${i}</span>
+                <select id="q${i}">
+                    <option value="">-</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="E">E</option>
+                </select>
+            </div>
+        `;
+    }
+
+    function irParaPasso2() {
+        document.getElementById('step-1').classList.remove('active');
+        document.getElementById('step-2').classList.add('active');
+    }
+
+    function calcularResultado() {
+        let acertos = 0;
+        for(let i = 1; i <= 45; i++) {
+            let respUsuario = document.getElementById(`q${i}`).value;
+            if(respUsuario === gabaritoOficial[i-1]) {
+                acertos++;
+            }
+        }
+        
+        // Cálculo simulado de TRI proporcional básico
+        let notaEstimada = (acertos * 15.5 + 300).toFixed(1);
+        if(notaEstimada > 1000) notaEstimada = 1000;
+
+        document.getElementById('txt-acertos').innerText = `${acertos} / 45`;
+        document.getElementById('txt-nota').innerText = notaEstimada;
+
+        document.getElementById('step-2').classList.remove('active');
+        document.getElementById('step-3').classList.add('active');
+    }
+
+    function reiniciar() {
+        for(let i = 1; i <= 45; i++) {
+            document.getElementById(`q${i}`).value = "";
+        }
+        document.getElementById('step-3').classList.remove('active');
+        document.getElementById('step-1').classList.add('active');
+    }
+</script>
+
+</body>
+</html>
