@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora TRI e Gabarito</title>
+    <title>Calculadora TRI e Gabarito - 90 Questões</title>
     <style>
         :root {
             --primary: #0A192F;
@@ -20,7 +20,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: #ffffff;
             padding: 25px;
@@ -73,7 +73,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             gap: 12px;
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
             padding: 5px;
             border: 1px solid var(--border);
@@ -118,12 +118,12 @@
 <body>
 
 <div class="container">
-    <h2>Calculadora de Gabarito & TRI</h2>
+    <h2>Edital na Hora - Gabarito & TRI (90 Questões)</h2>
 
-    <!-- PASSO 1: ESCOLHER CADERNO -->
+    <!-- PASSO 1: ESCOLHER CADERNO E DIA -->
     <div id="step-1" class="step active">
         <div class="form-group">
-            <label for="caderno">Selecione a cor do seu caderno de provas:</label>
+            <label for="caderno">Selecione o Caderno e Cor:</label>
             <select id="caderno">
                 <option value="amarelo">Caderno Amarelo</option>
                 <option value="azul">Caderno Azul</option>
@@ -131,14 +131,14 @@
                 <option value="rosa">Caderno Rosa</option>
             </select>
         </div>
-        <button class="btn" onclick="irParaPasso2()">Avançar para o Gabarito</button>
+        <button class="btn" onclick="irParaPasso2()">Avançar para o Gabarito (90 Questões)</button>
     </div>
 
     <!-- PASSO 2: MARCAR RESPOSTAS -->
     <div id="step-2" class="step">
-        <p style="text-align: center; color: #64748B;">Marque a alternativa que você marcou em cada questão:</p>
+        <p style="text-align: center; color: #64748B;">Marque a alternativa que você assinalou em cada uma das 90 questões:</p>
         <div class="questions-grid" id="grid-questoes">
-            <!-- Gerado via JavaScript -->
+            <!-- Gerado via JavaScript para 90 questões -->
         </div>
         <br>
         <button class="btn" onclick="calcularResultado()">Calcular Nota e Acertos</button>
@@ -148,7 +148,7 @@
     <div id="step-3" class="step">
         <div class="result-box">
             <h3>Resultado Preliminar</h3>
-            <p>Total de Acertos: <span id="txt-acertos" class="result-score">0 / 45</span></p>
+            <p>Total de Acertos: <span id="txt-acertos" class="result-score">0 / 90</span></p>
             <p>Nota Estimada (TRI): <span id="txt-nota" class="result-score">--</span></p>
         </div>
         <button class="btn" onclick="reiniciar()">Refazer Simulação</button>
@@ -156,12 +156,18 @@
 </div>
 
 <script>
-    // Gabarito fictício base para teste
-    const gabaritoOficial = ["A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E"];
+    // AQUI É ONDE VOCÊ COLE O GABARITO REAL QUANDO SAIR (90 posições de A a E)
+    const gabaritoOficial = [
+        "A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E",
+        "A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E",
+        "A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E",
+        "A","B","C","D","E","A","B","C","D","E","A","B","C","D","E","A","B","C","D","E",
+        "A","B","C","D","E","A","B","C","D","E"
+    ];
 
-    // Criar os selects das 45 questões automaticamente
+    // Criar os selects das 90 questões automaticamente na tela
     const grid = document.getElementById('grid-questoes');
-    for(let i = 1; i <= 45; i++) {
+    for(let i = 1; i <= 90; i++) {
         grid.innerHTML += `
             <div class="q-item">
                 <span>Q. ${i}</span>
@@ -184,18 +190,18 @@
 
     function calcularResultado() {
         let acertos = 0;
-        for(let i = 1; i <= 45; i++) {
+        for(let i = 1; i <= 90; i++) {
             let respUsuario = document.getElementById(`q${i}`).value;
             if(respUsuario === gabaritoOficial[i-1]) {
                 acertos++;
             }
         }
         
-        // Cálculo simulado de TRI proporcional básico
-        let notaEstimada = (acertos * 15.5 + 300).toFixed(1);
+        // Cálculo base proporcional ajustado para 90 questões
+        let notaEstimada = (acertos * 8.5 + 200).toFixed(1);
         if(notaEstimada > 1000) notaEstimada = 1000;
 
-        document.getElementById('txt-acertos').innerText = `${acertos} / 45`;
+        document.getElementById('txt-acertos').innerText = `${acertos} / 90`;
         document.getElementById('txt-nota').innerText = notaEstimada;
 
         document.getElementById('step-2').classList.remove('active');
@@ -203,7 +209,7 @@
     }
 
     function reiniciar() {
-        for(let i = 1; i <= 45; i++) {
+        for(let i = 1; i <= 90; i++) {
             document.getElementById(`q${i}`).value = "";
         }
         document.getElementById('step-3').classList.remove('active');
